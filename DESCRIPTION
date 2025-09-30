@@ -20,7 +20,10 @@ Depends:
     R (>= 3.5)
 Imports: 
     dplyr,
+    FNN,
     janitor,
+    logger,
     magrittr,
+    spdep,
     tidyr
 RoxygenNote: 7.3.2
