@@ -51,7 +51,7 @@ transforma_dados <- function(
     calculo_indice_estrutura,
     function(niveis_geograficos, grupos, referencias){
       calcula_indice_duncan(
-        tabela = dataset_selecionado,
+        dataset_selecionado = dataset_selecionado,
         nivel_geografico = niveis_geograficos,
         referencia = referencias,
         grupo = grupos

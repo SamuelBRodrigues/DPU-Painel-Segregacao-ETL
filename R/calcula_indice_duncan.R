@@ -16,7 +16,6 @@ calcula_indice_duncan <- function(dataset_selecionado, nivel_geografico, referen
   grp_pop   <- paste0("soma_", grupo)
   ref_prop  <- paste0("prop_", referencia)
   grp_prop  <- paste0("prop_", grupo)
-  indice_nome <- paste0("D_indice_", referencia)
   
   # Pegando a Cor ou Raça de referência
   cor_ou_raca_referencia <- grupo |> 
