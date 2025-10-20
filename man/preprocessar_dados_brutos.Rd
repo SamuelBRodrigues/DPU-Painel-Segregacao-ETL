@@ -18,7 +18,7 @@ preprocessar_dados_brutos(
 \item{dados_regioes_metropolitanas}{Tabela contendo os dados das Regiões Metropolitanas do Brasil.}
 }
 \value{
-Uma tabela contendo os dados de Agregados do Setor Censitário tratados.
+Salva ma tabela no formato RDS contendo os dados de Agregados do Setor Censitário tratados.
 Esses dados estão pronto para serem inseridos na função `calcula_indice_duncan`.
 }
 \description{

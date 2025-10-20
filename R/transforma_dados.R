@@ -7,7 +7,11 @@
 #' @param dicionario_agregados_setor_censitario Tabela contendo o Dicionário dos dados de Agregados do Setor Censitário. 
 #' @param dados_regioes_metropolitanas Tabela contendo os dados das Regiões Metropolitanas do Brasil. 
 #'
-#' @returns Uma tabela contendo os dados transformados, com os índices já calculados.
+#' @returns Salva as tabelas:
+#' \itemize{
+#' \item{dados_tabela}{Tabela salva em formato .rds na pasta `inst/extdata/` que contém os dados que são consumidos pelo Painel.}
+#' \item{dados_completos}{Tabela salva em format .csv na pasta `inst/extdata` que contém os dados completos que são baixados no Painel. Essa tabela deve ser atualizada no drive.}
+#' }
 #' @export
 #'
 #' @examples
@@ -15,20 +19,28 @@ transforma_dados <- function(
     modelo = "kernel",
     dados_agregados_setor_censitario = dpupsetl::dat_agregados_setor_censitario,
     dicionario_agregados_setor_censitario = dpupsetl::dic_agregados_setor_censitario,
-    dados_regioes_metropolitanas = dpupsetl::dat_regioes_metropolitanas
+    dados_regioes_metropolitanas = dpupsetl::dat_regioes_metropolitanas,
+    usar_dados_preprocessados = T
 ){
-  # Aplicando preprocessamento dos dados
-  dados_preprocessados <- preprocessar_dados_brutos(
-    dados_agregados_setor_censitario = dados_agregados_setor_censitario,
-    dicionario_agregados_setor_censitario = dicionario_agregados_setor_censitario,
-    dados_regioes_metropolitanas = dados_regioes_metropolitanas
-  )
+  if(is.null(dados_preprocessados)){
+    # Carregando dados preprocessados
+    dados_preprocessados <- readRDS("D:/Trabalho/Perceptron/DPU - Painel de Segregação/dpupsetl/inst/extdata/dados_preprocessados.rds")
+  } else{
+    # Aplicando preprocessamento dos dados
+    dados_preprocessados <- preprocessar_dados_brutos(
+      dados_agregados_setor_censitario = dados_agregados_setor_censitario,
+      dicionario_agregados_setor_censitario = dicionario_agregados_setor_censitario,
+      dados_regioes_metropolitanas = dados_regioes_metropolitanas
+    )
+  }
+  
   
   # Selecionando apenas as colunas que irão ser usadas para construir os indíces
   if(is.null(modelo)){
     dataset_selecionado <- dados_preprocessados |> 
       dplyr::select(-dplyr::contains("kernel"), -dplyr::contains("knn")) %>%
-      constroi_agregacao_variaveis(., "n_branco", c("preta", "parda"))
+      constroi_agregacao_variaveis(., "n_branco", c("preta", "parda")) %>%
+      constroi_agregacao_variaveis(., "geral", c("preta", "parda", "amarela", "indigena")) 
   } else if(modelo %in% c("knn", "kernel")){
     sufixo_modelo <- stringr::str_glue("_{modelo}_imp")
     dataset_selecionado <- dados_preprocessados |> 
@@ -36,7 +48,8 @@ transforma_dados <- function(
       dplyr::rename_with(
         .fn = ~ stringr::str_remove(.x, sufixo_modelo)
       ) %>%
-      constroi_agregacao_variaveis(., "naobranco", c("preta", "parda"))
+      constroi_agregacao_variaveis(., "naobranco", c("preta", "parda")) %>%
+      constroi_agregacao_variaveis(., "geral", c("preta", "parda", "amarela", "indigena")) 
   } else{
     base::stop(
       stringr::str_glue(
@@ -70,5 +83,8 @@ transforma_dados <- function(
     indice_raca,
     dados_sumarizados
   )
+
+  saveRDS(indice_raca, "inst/extdata/dados_tabela.rds")
+  readr::write_csv(dados_transformados, "inst/extdata/dados_completos.csv")
 }
 

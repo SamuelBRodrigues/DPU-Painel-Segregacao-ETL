@@ -8,7 +8,8 @@ transforma_dados(
   modelo = "kernel",
   dados_agregados_setor_censitario = dpupsetl::dat_agregados_setor_censitario,
   dicionario_agregados_setor_censitario = dpupsetl::dic_agregados_setor_censitario,
-  dados_regioes_metropolitanas = dpupsetl::dat_regioes_metropolitanas
+  dados_regioes_metropolitanas = dpupsetl::dat_regioes_metropolitanas,
+  usar_dados_preprocessados = T
 )
 }
 \arguments{
@@ -21,7 +22,11 @@ transforma_dados(
 \item{dados_regioes_metropolitanas}{Tabela contendo os dados das Regiões Metropolitanas do Brasil.}
 }
 \value{
-Uma tabela contendo os dados transformados, com os índices já calculados.
+Salva as tabelas:
+\itemize{
+\item{dados_tabela}{Tabela salva em formato .rds na pasta `inst/extdata/` que contém os dados que são consumidos pelo Painel.}
+\item{dados_completos}{Tabela salva em format .csv na pasta `inst/extdata` que contém os dados completos que são baixados no Painel. Essa tabela deve ser atualizada no drive.}
+}
 }
 \description{
 Função responsável por aplicar o processo de transformação nos dados, construindo os dados de Índice de Duncan e resultados das variáveis por níveis geográficos.

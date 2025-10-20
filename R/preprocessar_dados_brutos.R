@@ -6,7 +6,7 @@
 #' @param dicionario_agregados_setor_censitario Tabela contendo o Dicionário dos dados de Agregados do Setor Censitário.
 #' @param dados_regioes_metropolitanas Tabela contendo os dados das Regiões Metropolitanas do Brasil.
 #'
-#' @returns Uma tabela contendo os dados de Agregados do Setor Censitário tratados.
+#' @returns Salva ma tabela no formato RDS contendo os dados de Agregados do Setor Censitário tratados.
 #' Esses dados estão pronto para serem inseridos na função `calcula_indice_duncan`.
 #' @export
 #'
@@ -148,7 +148,9 @@ preprocessar_dados_brutos <- function(
   
   dataset_tratado <- imputa_kernel(dataset_cleaned = dataset_cleaned) |> 
     sf::st_drop_geometry()
-
   
+  saveRDS(dataset_tratado, "inst/extdata/dados_preprocessados.rds", compress = "xz")
+
+  return(dataset_tratado)
 }
 
